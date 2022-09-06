@@ -938,9 +938,9 @@ void pin_init(void)
   pinMode(7, OUTPUT);
   pinMode(10, OUTPUT);
   //Make row pins input
-  pinMode(8, INPUT_PULLUP);
-  pinMode(9, INPUT_PULLUP);
-  pinMode(5, INPUT_PULLUP);
+  pinMode(8, INPUT);
+  pinMode(9, INPUT);
+  pinMode(5, INPUT);
 
 
 }
@@ -1537,66 +1537,42 @@ void read_button_matrix() {
   digitalWrite(COLS[0],HIGH);
   digitalWrite(COLS[1],LOW);
   digitalWrite(COLS[2],LOW);
-  digitalWrite(COLS[3],LOW);
  
-  if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+  if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == HIGH){
         Serial.println("1");
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH){
         Serial.println("4");  
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH && digitalRead(ROWS[3]) == LOW){
+  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == HIGH){
         Serial.println("7");
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == HIGH){
-        Serial.println("*");
   }else{;}
   delay(100);
  
   digitalWrite(COLS[0],LOW);
   digitalWrite(COLS[1],HIGH);
   digitalWrite(COLS[2],LOW);
-  digitalWrite(COLS[3],LOW);
  
-  if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+  if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == HIGH){
         Serial.println("2");
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH){
         Serial.println("5");  
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH && digitalRead(ROWS[3]) == LOW){
+  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW){
         Serial.println("8");
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == HIGH){
-        Serial.println("0");
   }else{;}
   delay(100);
  
   digitalWrite(COLS[0],LOW);
   digitalWrite(COLS[1],LOW);
   digitalWrite(COLS[2],HIGH);
-  digitalWrite(COLS[3],LOW);
  
-  if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+  if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == HIGH){
         Serial.println("3");
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH){
         Serial.println("6");  
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH && digitalRead(ROWS[3]) == LOW){
+  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW){
         Serial.println("9");
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == HIGH){
-        Serial.println("#");
   }else{;}
   delay(100);
  
-  digitalWrite(COLS[0],LOW);
-  digitalWrite(COLS[1],LOW);
-  digitalWrite(COLS[2],LOW);
-  digitalWrite(COLS[3],HIGH);
- 
-  if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
-        Serial.println("A");
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
-        Serial.println("B");  
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH && digitalRead(ROWS[3]) == LOW){
-        Serial.println("C");
-  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == HIGH){
-        Serial.println("D");
-  }else{;}
-  delay(100);
 }
 
 
