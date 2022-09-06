@@ -15,6 +15,10 @@
 // ----------------------------------------------------- PLEASE USE SETUP ASSISTANT AVAILABLE IN SUB FOLDER !!!! -------------------------------------------
 
 #include <Keypad.h>
+#include "Gamepad.h"
+
+//Initializing a Gamepad
+Gamepad gp;
 
 
 //#define INCLUDE_TM1638                      //{"Name":"INCLUDE_TM1638","Type":"autodefine","Condition":"[TM1638_ENABLEDMODULES]>0"}
@@ -1427,40 +1431,41 @@ void UpdateGamepadEncodersState(bool sendState) {
 
 void btn_ex_1_prsd(void)
 {
-  Serial.println("ex 1 pressed" );
+  gp.setButtonState(9, true);
 }
 void btn_ex_1_rlsd(void)
 {
+  gp.setButtonState(9, false);
 }
 
 
 void sw_d_prsd(void)
 {
-  Serial.println("swd pressed" );
+  gp.setButtonState(10, true);
 }
 void sw_d_rlsd(void)
 {
-
+  gp.setButtonState(10, false);
 }
 
 
 void btn_ex_3_prsd(void)
 {
-  Serial.println("ex 3 pressed" );
+  gp.setButtonState(11, true);
 }
 void btn_ex_3_rlsd(void)
 {
-
+  gp.setButtonState(11, false);
 }
 
 
 void sw_b_prsd(void)
 {
-  Serial.println("swc pressed" );
+  gp.setButtonState(12, true);
 }
 void sw_b_rlsd(void)
 {
-
+  gp.setButtonState(12, false);
 }
 
 
@@ -1560,20 +1565,31 @@ byte colPins[COLS] = {13, 7, 10}; //connect to the column pinouts of the keypad
 //Create an object of keypad
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
-
 void read_button_matrix(void)
 {
   char key = keypad.getKey();// Read the key
-  
-  // Print if key pressed
-  if (key){
+  KeyState state = keypad.getState();
+
+  if (state == PRESSED && key != NO_KEY) {
     Serial.print("Key Pressed : ");
     Serial.println(key);
+
+    for(int i = 1; i < 10; i ++)
+    {
+      if(key == (int)'0' + i)
+      {
+        gp.setButtonState(i-1, true);
+      }
+    }
+  }
+  else if (state == RELEASED )
+  {
+    for(int j = 1; j < 10; j ++)
+    {
+       gp.setButtonState(j-1, false);
+    }
   }
 }
-
-
-
 
 
 char loop_opt;
