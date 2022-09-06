@@ -67,7 +67,6 @@
 #include "Arduino.h"
 #include <avr/pgmspace.h>
 #include <Wire.h>
-#include "Adafruit_GFX.h"
 #include "FlowSerialRead.h"
 #include "setPwmFrequency.h"
 #include "SHDebouncer.h"
@@ -935,6 +934,15 @@ void pin_init(void)
   DDRB &= ~(1<<PB3);    //Configure PORTB pin 0 as an input  --- BUTTON 1
   PORTB |= (1<<PB3);    //Activate pull-ups in PORTB pin 0
 
+  pinMode(13, OUTPUT);
+  pinMode(7, OUTPUT);
+  pinMode(10, OUTPUT);
+  //Make row pins input
+  pinMode(8, INPUT_PULLUP);
+  pinMode(9, INPUT_PULLUP);
+  pinMode(5, INPUT_PULLUP);
+
+
 }
 
 //***************
@@ -1520,6 +1528,79 @@ void butread_pb(void)
 }
 
 
+int ROWS[3] = {8, 9, 5};
+int COLS[3] = {13, 7 , 10};
+
+ 
+void read_button_matrix() {
+  // put your main code here, to run repeatedly:
+  digitalWrite(COLS[0],HIGH);
+  digitalWrite(COLS[1],LOW);
+  digitalWrite(COLS[2],LOW);
+  digitalWrite(COLS[3],LOW);
+ 
+  if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+        Serial.println("1");
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+        Serial.println("4");  
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH && digitalRead(ROWS[3]) == LOW){
+        Serial.println("7");
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == HIGH){
+        Serial.println("*");
+  }else{;}
+  delay(100);
+ 
+  digitalWrite(COLS[0],LOW);
+  digitalWrite(COLS[1],HIGH);
+  digitalWrite(COLS[2],LOW);
+  digitalWrite(COLS[3],LOW);
+ 
+  if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+        Serial.println("2");
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+        Serial.println("5");  
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH && digitalRead(ROWS[3]) == LOW){
+        Serial.println("8");
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == HIGH){
+        Serial.println("0");
+  }else{;}
+  delay(100);
+ 
+  digitalWrite(COLS[0],LOW);
+  digitalWrite(COLS[1],LOW);
+  digitalWrite(COLS[2],HIGH);
+  digitalWrite(COLS[3],LOW);
+ 
+  if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+        Serial.println("3");
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+        Serial.println("6");  
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH && digitalRead(ROWS[3]) == LOW){
+        Serial.println("9");
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == HIGH){
+        Serial.println("#");
+  }else{;}
+  delay(100);
+ 
+  digitalWrite(COLS[0],LOW);
+  digitalWrite(COLS[1],LOW);
+  digitalWrite(COLS[2],LOW);
+  digitalWrite(COLS[3],HIGH);
+ 
+  if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+        Serial.println("A");
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == LOW){
+        Serial.println("B");  
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH && digitalRead(ROWS[3]) == LOW){
+        Serial.println("C");
+  }else if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == LOW && digitalRead(ROWS[3]) == HIGH){
+        Serial.println("D");
+  }else{;}
+  delay(100);
+}
+
+
+
 
 char loop_opt;
 unsigned long lastSerialActivity = 0;
@@ -1529,7 +1610,8 @@ void loop() {
   if(f10ms)
   {
     f10ms = LOW; 
-    butread_pb();   
+    butread_pb();  
+    read_button_matrix(); 
   }
 #ifdef INCLUDE_SHAKEITL298N
 	shShakeitL298N.safetyCheck();
