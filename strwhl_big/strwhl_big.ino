@@ -14,6 +14,9 @@
 // ----------------------------------------------------- PLEASE USE SETUP ASSISTANT AVAILABLE IN SUB FOLDER !!!! -------------------------------------------
 // ----------------------------------------------------- PLEASE USE SETUP ASSISTANT AVAILABLE IN SUB FOLDER !!!! -------------------------------------------
 
+#include <Keypad.h>
+
+
 //#define INCLUDE_TM1638                      //{"Name":"INCLUDE_TM1638","Type":"autodefine","Condition":"[TM1638_ENABLEDMODULES]>0"}
 //#define INCLUDE_WS2801                      //{"Name":"INCLUDE_WS2801","Type":"autodefine","Condition":"[WS2801_RGBLEDCOUNT]>0"}
 #define INCLUDE_WS2812B                     //{"Name":"INCLUDE_WS2812B","Type":"autodefine","Condition":"[WS2812B_RGBLEDCOUNT]>0"}
@@ -875,6 +878,13 @@ unsigned char presdb_pb = 0;     // Pressed button
 unsigned char vdcnt_pb = 0;      // Valid data counter
 unsigned char lvdcnt_pb = 0;     // Long valid data counter
 
+unsigned char butdat_m = 0;     // Button data
+unsigned char prvdat_m = 0;     // Previous button data
+unsigned char button_m = 0;     // Button data store
+unsigned char prvbut_m = 0;     // Previous button data
+unsigned char presdb_m = 0;     // Pressed button
+unsigned char vdcnt_m = 0;      // Valid data counter
+unsigned char lvdcnt_m = 0;     // Long valid data counter
 
 //*************************
 //*************************
@@ -922,27 +932,34 @@ void stopTimer1(){
 void pin_init(void)
 {
 
-  DDRB &= ~(1<<PB0);    //Configure PORTB pin 0 as an input  --- BUTTON 1
+  DDRB &= ~(1<<PB0);    //Configure PORTB pin 0 as an input  --- BUTTON 
   PORTB |= (1<<PB0);    //Activate pull-ups in PORTB pin 0
 
-  DDRB &= ~(1<<PB1);    //Configure PORTB pin 0 as an input  --- BUTTON 1
-  PORTB |= (1<<PB1);    //Activate pull-ups in PORTB pin 0
+  DDRB &= ~(1<<PB1);    //Configure PORTB pin 1 as an input  --- BUTTON 
+  PORTB |= (1<<PB1);    //Activate pull-ups in PORTB pin 1
 
-  DDRB &= ~(1<<PB2);    //Configure PORTB pin 0 as an input  --- BUTTON 1
-  PORTB |= (1<<PB2);    //Activate pull-ups in PORTB pin 0
+  DDRB &= ~(1<<PB2);    //Configure PORTB pin 2 as an input  --- BUTTON 
+  PORTB |= (1<<PB2);    //Activate pull-ups in PORTB pin 2
 
-  DDRB &= ~(1<<PB3);    //Configure PORTB pin 0 as an input  --- BUTTON 1
-  PORTB |= (1<<PB3);    //Activate pull-ups in PORTB pin 0
+  DDRB &= ~(1<<PB3);    //Configure PORTB pin 3 as an input  --- BUTTON 
+  PORTB |= (1<<PB3);    //Activate pull-ups in PORTB pin 3
 
+
+/*
+  DDRB &= ~(1<<PB4);    //Configure PORTB pin 4 as an input  --- ROW 
+  PORTB |= (1<<PB4);    //Activate pull-ups in PORTB pin 4
+  
+  DDRB &= ~(1<<PB5);    //Configure PORTB pin 5 as an input  --- ROW 
+  PORTB |= (1<<PB5);    //Activate pull-ups in PORTB pin 5
+
+  DDRC &= ~(1<<PC6);    //Configure PORTC pin 6 as an input  --- ROW 
+  PORTC |= (1<<PC6);    //Activate pull-ups in PORTC pin 6
+  
   pinMode(13, OUTPUT);
   pinMode(7, OUTPUT);
   pinMode(10, OUTPUT);
-  //Make row pins input
-  pinMode(8, INPUT);
-  pinMode(9, INPUT);
-  pinMode(5, INPUT);
-
-
+  
+*/
 }
 
 //***************
@@ -1528,52 +1545,33 @@ void butread_pb(void)
 }
 
 
-int ROWS[3] = {8, 9, 5};
-int COLS[3] = {13, 7 , 10};
 
- 
-void read_button_matrix() {
-  // put your main code here, to run repeatedly:
-  digitalWrite(COLS[0],HIGH);
-  digitalWrite(COLS[1],LOW);
-  digitalWrite(COLS[2],LOW);
- 
-  if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == HIGH){
-        Serial.println("1");
-  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH){
-        Serial.println("4");  
-  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == HIGH){
-        Serial.println("7");
-  }else{;}
-  delay(100);
- 
-  digitalWrite(COLS[0],LOW);
-  digitalWrite(COLS[1],HIGH);
-  digitalWrite(COLS[2],LOW);
- 
-  if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == HIGH){
-        Serial.println("2");
-  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH){
-        Serial.println("5");  
-  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW){
-        Serial.println("8");
-  }else{;}
-  delay(100);
- 
-  digitalWrite(COLS[0],LOW);
-  digitalWrite(COLS[1],LOW);
-  digitalWrite(COLS[2],HIGH);
- 
-  if(digitalRead(ROWS[0]) == LOW && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == HIGH){
-        Serial.println("3");
-  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == LOW && digitalRead(ROWS[2]) == HIGH){
-        Serial.println("6");  
-  }else if(digitalRead(ROWS[0]) == HIGH && digitalRead(ROWS[1]) == HIGH && digitalRead(ROWS[2]) == LOW){
-        Serial.println("9");
-  }else{;}
-  delay(100);
- 
+const byte ROWS = 3; //four rows
+const byte COLS = 3; //three columns
+
+char keys[ROWS][COLS] = {
+  {'1','2','3'},
+  {'4','5','6'},
+  {'7','8','9'}
+};
+byte rowPins[ROWS] = {8, 9, 5}; //connect to the row pinouts of the keypad
+byte colPins[COLS] = {13, 7, 10}; //connect to the column pinouts of the keypad
+
+//Create an object of keypad
+Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
+
+
+void read_button_matrix(void)
+{
+  char key = keypad.getKey();// Read the key
+  
+  // Print if key pressed
+  if (key){
+    Serial.print("Key Pressed : ");
+    Serial.println(key);
+  }
 }
+
 
 
 
@@ -1588,6 +1586,8 @@ void loop() {
     f10ms = LOW; 
     butread_pb();  
     read_button_matrix(); 
+
+    
   }
 #ifdef INCLUDE_SHAKEITL298N
 	shShakeitL298N.safetyCheck();
